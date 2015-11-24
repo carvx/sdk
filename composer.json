@@ -1,0 +1,18 @@
+{
+    "name": "carvx/sdk",
+    "type": "library",
+    "description": "SDK for CAR VX web API",
+    "authors": [
+        {
+            "name": "CAR VX Limited",
+            "homepage": "http://carvx.jp"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.0",
+        "ext-curl": "*"
+    },
+    "autoload": {
+        "psr-4": {"Carvx\\": "src/"}
+    }
+}
