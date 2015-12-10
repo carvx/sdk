@@ -24,10 +24,29 @@ class CarvxService
     {
         $request = new HttpRequest([
             'url' => sprintf('%s/v1/search', $this->url),
-            'connectTimeout' => '150',
+            'timeout' => '150',
         ]);
         $curl = new Curl($request);
-        $response = $curl->post(['chassis_number' => $chassisNumber]);
-        return Search::fromJson($response->body);
+        try {
+            $response = $curl->post(['chassis_number' => $chassisNumber]);
+            $searchData = $this->parseResponse($response);
+            if (!empty($searchData)) {
+                return new Search($searchData['uid'], $searchData['cars']);
+            }
+        } catch (CarvxApiException $ex) {
+            // TODO: add logging
+            //echo($ex->getMessage() . "\n");
+        }
+        return null;
+    }
+
+    private function parseResponse($response)
+    {
+        $parsedBody = json_decode($response->body, true);
+        if (!empty($parsedBody['error'])) {
+            // TODO: add logging
+            //echo($parsedBody['error'] . "\n");
+        }
+        return $parsedBody['data'];
     }
 }

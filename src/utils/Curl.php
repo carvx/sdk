@@ -31,6 +31,9 @@ class Curl
     private function execute()
     {
         $response = curl_exec($this->curl);
+        if (false === $response) {
+            throw new CarvxApiException("No response from the server.");
+        }
         if (curl_getinfo($this->curl, CURLINFO_HTTP_CODE) !== 200) {
             throw new CarvxApiException("Bad server response.\n$response");
         }

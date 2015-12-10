@@ -7,12 +7,6 @@ class Search implements \JsonSerializable
     private $uid;
     private $cars;
 
-    public static function fromJson($json)
-    {
-        $searchData = json_decode($json, true);
-        return new Search($searchData['uid'], $searchData['cars']);
-    }
-
     public function __construct($uid, $carsData)
     {
         $this->uid = $uid;
