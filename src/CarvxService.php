@@ -26,7 +26,7 @@ class CarvxService
     public function createSearch($chassisNumber)
     {
         $request = new HttpRequest([
-            'url' => sprintf('%s/api/v1/search', $this->url),
+            'url' => sprintf('%s/api/v1/createSearch', $this->url),
             'timeout' => '150',
         ]);
         $curl = new Curl($request);
