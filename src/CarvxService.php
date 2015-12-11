@@ -6,18 +6,21 @@ use Carvx\models\Search;
 use Carvx\utils\CarvxApiException;
 use Carvx\utils\Curl;
 use Carvx\utils\HttpRequest;
+use Carvx\utils\SignatureManager;
 
 class CarvxService
 {
+    const USER_UID_PARAM = 'user_uid';
+
     private $url;
     private $uid;
-    private $signature;
+    private $key;
 
-    public function __construct($url, $uid, $signature)
+    public function __construct($url, $uid, $key)
     {
         $this->url = $url;
         $this->uid = $uid;
-        $this->signature = $signature;
+        $this->key = $key;
     }
 
     public function createSearch($chassisNumber)
@@ -28,7 +31,8 @@ class CarvxService
         ]);
         $curl = new Curl($request);
         try {
-            $response = $curl->post(['chassis_number' => $chassisNumber]);
+            $params = $this->prepareParams(['chassis_number' => $chassisNumber]);
+            $response = $curl->post($params);
             $searchData = $this->parseResponse($response);
             if (!empty($searchData)) {
                 return new Search($searchData['uid'], $searchData['cars']);
@@ -38,6 +42,13 @@ class CarvxService
             //echo($ex->getMessage() . "\n");
         }
         return null;
+    }
+
+    private function prepareParams($params)
+    {
+        $params[self::USER_UID_PARAM] = $this->uid;
+        $signManager = new SignatureManager($this->key);
+        return $signManager->addSignature($params);
     }
 
     private function parseResponse($response)
