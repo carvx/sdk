@@ -11,16 +11,24 @@ use Carvx\utils\SignatureManager;
 class CarvxService
 {
     const USER_UID_PARAM = 'user_uid';
+    const API_KEY_PARAM = 'api_key';
 
     private $url;
     private $uid;
     private $key;
 
-    public function __construct($url, $uid, $key)
+    private $needSignature = true;
+
+    public function __construct($url, $uid, $key, $options = [])
     {
         $this->url = $url;
         $this->uid = $uid;
         $this->key = $key;
+
+        if (array_key_exists('needSignature', $options)
+            && is_bool($options['needSignature'])) {
+            $this->needSignature = $options['needSignature'];
+        }
     }
 
     public function createSearch($chassisNumber)
@@ -47,8 +55,13 @@ class CarvxService
     private function prepareParams($params)
     {
         $params[self::USER_UID_PARAM] = $this->uid;
-        $signManager = new SignatureManager($this->key);
-        return $signManager->addSignature($params);
+        if ($this->needSignature) {
+            $signManager = new SignatureManager($this->key);
+            return $signManager->addSignature($params);
+        } else {
+            $params[self::API_KEY_PARAM] = $this->key;
+            return $params;
+        }
     }
 
     private function parseResponse($response)

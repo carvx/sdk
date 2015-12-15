@@ -9,7 +9,6 @@ class HttpRequest
 
     public $url;
     public $httpVersion = self::HTTP_VERSION_1_0;
-    public $connectTimeout = 60;
     public $timeout = 0;
 
     public function __construct($options)
@@ -18,7 +17,7 @@ class HttpRequest
             throw new CarvxApiException('URL not set.');
         }
         $this->url = $options['url'];
-        foreach (['httpVersion', 'connectTimeout', 'timeout'] as $attribute) {
+        foreach (['httpVersion', 'timeout'] as $attribute) {
             if (!empty($options[$attribute])) {
                 $this->$attribute = $options[$attribute];
             }

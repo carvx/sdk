@@ -15,7 +15,6 @@ class Curl
         $this->curl = curl_init();
         curl_setopt($this->curl, CURLOPT_URL, $request->url);
         curl_setopt($this->curl, CURLOPT_HTTP_VERSION, $request->httpVersion);
-        curl_setopt($this->curl, CURLOPT_CONNECTTIMEOUT, $request->connectTimeout);
         curl_setopt($this->curl, CURLOPT_TIMEOUT, $request->timeout);
         curl_setopt($this->curl, CURLOPT_HEADER, true);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
