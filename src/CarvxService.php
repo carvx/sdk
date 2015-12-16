@@ -21,7 +21,8 @@ class CarvxService
 
     public function __construct($url, $uid, $key, $options = [])
     {
-        $this->url = $url;
+        // Force usage of HTTPS.
+        $this->url = preg_replace('/^http:/', 'https:', strtolower($url));
         $this->uid = $uid;
         $this->key = $key;
 
