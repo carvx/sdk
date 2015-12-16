@@ -4,12 +4,8 @@ namespace Carvx\utils;
 
 class HttpRequest
 {
-    const HTTP_VERSION_1_0 = CURL_HTTP_VERSION_1_0;
-    const HTTP_VERSION_1_1 = CURL_HTTP_VERSION_1_1;
-
     public $url;
-    public $httpVersion = self::HTTP_VERSION_1_0;
-    public $timeout = 0;
+    public $timeout = 90;
 
     public function __construct($options)
     {
@@ -17,10 +13,8 @@ class HttpRequest
             throw new CarvxApiException('URL not set.');
         }
         $this->url = $options['url'];
-        foreach (['httpVersion', 'timeout'] as $attribute) {
-            if (!empty($options[$attribute])) {
-                $this->$attribute = $options[$attribute];
-            }
+        if (!empty($options['timeout'])) {
+            $this->timeout = $options['timeout'];
         }
     }
 }

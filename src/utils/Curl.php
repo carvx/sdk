@@ -14,7 +14,8 @@ class Curl
     {
         $this->curl = curl_init();
         curl_setopt($this->curl, CURLOPT_URL, $request->url);
-        curl_setopt($this->curl, CURLOPT_HTTP_VERSION, $request->httpVersion);
+        // Disable 100-Continue expectation
+        curl_setopt($this->curl, CURLOPT_HTTPHEADER, ['Expect:']);
         curl_setopt($this->curl, CURLOPT_TIMEOUT, $request->timeout);
         curl_setopt($this->curl, CURLOPT_HEADER, true);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
