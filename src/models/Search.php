@@ -4,8 +4,8 @@ namespace Carvx\models;
 
 class Search implements \JsonSerializable
 {
-    private $uid;
-    private $cars;
+    public $uid;
+    public $cars;
 
     public function __construct($uid, $carsData)
     {

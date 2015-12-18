@@ -53,6 +53,29 @@ class CarvxService
         return null;
     }
 
+    public function createReport($searchId, $carId)
+    {
+        $request = new HttpRequest([
+            'url' => sprintf('%s/api/v1/createReport', $this->url),
+        ]);
+        $curl = new Curl($request);
+        try {
+            $params = $this->prepareParams([
+                'search_id' => $searchId,
+                'car_id' => $carId
+            ]);
+            $response = $curl->post($params);
+            $reportId = $this->parseResponse($response);
+            if (!empty($reportId)) {
+                return $reportId;
+            }
+        } catch (CarvxApiException $ex) {
+            // TODO: add logging
+            //echo($ex->getMessage() . "\n");
+        }
+        return null;
+    }
+
     private function prepareParams($params)
     {
         $params[self::USER_UID_PARAM] = $this->uid;
