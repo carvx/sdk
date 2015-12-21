@@ -18,6 +18,7 @@ class CarvxService
     private $key;
 
     private $needSignature = true;
+    private $raiseExceptions = false;
 
     public function __construct($url, $uid, $key, $options = [])
     {
@@ -26,54 +27,71 @@ class CarvxService
         $this->uid = $uid;
         $this->key = $key;
 
-        if (array_key_exists('needSignature', $options)
-            && is_bool($options['needSignature'])) {
-            $this->needSignature = $options['needSignature'];
-        }
+        $this->parseOptions(
+            [
+                'needSignature' => 'is_bool',
+                'raiseExceptions' => 'is_bool',
+            ],
+            $options
+        );
     }
 
     public function createSearch($chassisNumber)
     {
-        $request = new HttpRequest([
-            'url' => sprintf('%s/api/v1/createSearch', $this->url),
-            'timeout' => '150',
-        ]);
-        $curl = new Curl($request);
-        try {
+        return $this->handleRequest(function () use ($chassisNumber) {
+            $request = new HttpRequest([
+                'url' => $this->createUrl('/api/v1/createSearch'),
+            ]);
+            $curl = new Curl($request);
             $params = $this->prepareParams(['chassis_number' => $chassisNumber]);
             $response = $curl->post($params);
             $searchData = $this->parseResponse($response);
-            if (!empty($searchData)) {
-                return new Search($searchData['uid'], $searchData['cars']);
-            }
-        } catch (CarvxApiException $ex) {
-            // TODO: add logging
-            //echo($ex->getMessage() . "\n");
-        }
-        return null;
+            return new Search($searchData['uid'], $searchData['cars']);
+        });
     }
 
     public function createReport($searchId, $carId)
     {
-        $request = new HttpRequest([
-            'url' => sprintf('%s/api/v1/createReport', $this->url),
-        ]);
-        $curl = new Curl($request);
-        try {
+        return $this->handleRequest(function () use ($searchId, $carId) {
+            $request = new HttpRequest([
+                'url' => $this->createUrl('/api/v1/createReport'),
+            ]);
+            $curl = new Curl($request);
             $params = $this->prepareParams([
                 'search_id' => $searchId,
                 'car_id' => $carId
             ]);
             $response = $curl->post($params);
-            $reportId = $this->parseResponse($response);
-            if (!empty($reportId)) {
-                return $reportId;
-            }
+            return $this->parseResponse($response);
+        });
+    }
+
+    private function handleRequest(\Closure $handler, $defaultValue = null)
+    {
+        try {
+            return $handler();
         } catch (CarvxApiException $ex) {
             // TODO: add logging
             //echo($ex->getMessage() . "\n");
+            if ($this->raiseExceptions) {
+                throw $ex;
+            }
         }
-        return null;
+        return $defaultValue;
+    }
+
+    private function parseOptions($allowedOptions, $options) {
+        foreach ($allowedOptions as $attribute => $predicate) {
+            if (array_key_exists($attribute, $options)
+                && $predicate($options[$attribute])) {
+                $this->$attribute = $options[$attribute];
+            }
+        }
+    }
+
+    private function createUrl($path)
+    {
+        return sprintf('%s%s', $this->url, $path);
     }
 
     private function prepareParams($params)
@@ -92,8 +110,7 @@ class CarvxService
     {
         $parsedBody = json_decode($response->body, true);
         if (!empty($parsedBody['error'])) {
-            // TODO: add logging
-            //echo($parsedBody['error'] . "\n");
+            throw new CarvxApiException($parsedBody['error']);
         }
         return $parsedBody['data'];
     }
