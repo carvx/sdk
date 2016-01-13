@@ -32,8 +32,7 @@ class SignatureManager
 
     private function createHash($params)
     {
-        $data = $this->transformToString($params);
-        return base64_encode(hash_hmac('sha256', $data, $this->key, true));
+        return hash('sha256', $this->transformToString($params) . $this->key);
     }
 
     private function transformToString($params)
