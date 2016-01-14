@@ -16,7 +16,7 @@ class Search implements \JsonSerializable
         }
     }
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return ['uid' => $this->uid, 'cars' => $this->cars];
     }

@@ -29,7 +29,7 @@ class Car implements \JsonSerializable
         $this->transmission = $carData['transmission'];
     }
 
-    function jsonSerialize()
+    public function jsonSerialize()
     {
         return [
             'car_id' => $this->carId,
