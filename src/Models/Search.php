@@ -1,6 +1,6 @@
 <?php
 
-namespace Carvx\models;
+namespace Carvx\Models;
 
 class Search implements \JsonSerializable
 {

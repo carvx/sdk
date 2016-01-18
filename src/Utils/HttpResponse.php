@@ -1,6 +1,6 @@
 <?php
 
-namespace Carvx\utils;
+namespace Carvx\Utils;
 
 class HttpResponse
 {

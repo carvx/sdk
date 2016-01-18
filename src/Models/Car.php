@@ -1,6 +1,6 @@
 <?php
 
-namespace Carvx\models;
+namespace Carvx\Models;
 
 class Car implements \JsonSerializable
 {

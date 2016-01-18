@@ -2,11 +2,11 @@
 
 namespace Carvx;
 
-use Carvx\models\Search;
-use Carvx\utils\CarvxApiException;
-use Carvx\utils\Curl;
-use Carvx\utils\HttpRequest;
-use Carvx\utils\SignatureManager;
+use Carvx\Models\Search;
+use Carvx\Utils\CarvxApiException;
+use Carvx\Utils\Curl;
+use Carvx\Utils\HttpRequest;
+use Carvx\Utils\SignatureManager;
 
 class CarvxService
 {
