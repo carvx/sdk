@@ -2,6 +2,7 @@
 
 namespace Carvx;
 
+use Carvx\Models\Report;
 use Carvx\Models\Search;
 use Carvx\Utils\CarvxApiException;
 use Carvx\Utils\Curl;
@@ -40,7 +41,7 @@ class CarvxService
     {
         return $this->handleRequest(function () use ($chassisNumber) {
             $request = new HttpRequest([
-                'url' => $this->createUrl('/api/v1/createSearch'),
+                'url' => $this->createUrl('/api/v1/create-search'),
             ]);
             $curl = new Curl($request);
             $params = $this->prepareParams(['chassis_number' => $chassisNumber]);
@@ -54,7 +55,7 @@ class CarvxService
     {
         return $this->handleRequest(function () use ($searchId, $carId) {
             $request = new HttpRequest([
-                'url' => $this->createUrl('/api/v1/createReport'),
+                'url' => $this->createUrl('/api/v1/create-report'),
             ]);
             $curl = new Curl($request);
             $params = $this->prepareParams([
@@ -63,6 +64,19 @@ class CarvxService
             ]);
             $response = $curl->post($params);
             return $this->parseResponse($response);
+        });
+    }
+
+    public function getReport($reportId)
+    {
+        return $this->handleRequest(function () use ($reportId) {
+            $request = new HttpRequest([
+                'url' => $this->createUrl('/api/v1/get-report'),
+            ]);
+            $curl = new Curl($request);
+            $params = $this->prepareParams(['report_id' => $reportId]);
+            $response = $curl->get($params);
+            return new Report($this->parseResponse($response));
         });
     }
 

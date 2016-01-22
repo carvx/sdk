@@ -2,8 +2,11 @@
 
 namespace Carvx\Models;
 
-class Search implements \JsonSerializable
+class Search extends AbstractModel
 {
+    const UID_FIELD = 'uid';
+    const CARS_FIELD = 'cars';
+
     public $uid;
     public $cars;
 
@@ -16,8 +19,11 @@ class Search implements \JsonSerializable
         }
     }
 
-    public function jsonSerialize()
+    protected function mappings()
     {
-        return ['uid' => $this->uid, 'cars' => $this->cars];
+        return [
+            self::UID_FIELD => 'uid',
+            self::CARS_FIELD => 'cars'
+        ];
     }
 }
