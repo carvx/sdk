@@ -5,29 +5,41 @@ namespace Carvx\Utils;
 class SignatureManager
 {
     const SIGNATURE_PARAM = 'signature';
+    const API_KEY_PARAM = 'api_key';
 
     private $key;
+    private $needSignature;
 
-    public function __construct($key)
+    public function __construct($key, $needSignature)
     {
         $this->key = $key;
+        $this->needSignature = $needSignature;
     }
 
     public function addSignature($params)
     {
-        $params[self::SIGNATURE_PARAM] = $this->createHash($params);
+        if ($this->needSignature) {
+            $params[self::SIGNATURE_PARAM] = $this->createHash($params);
+        } else {
+            $params[self::API_KEY_PARAM] = $this->key;
+        }
         return $params;
     }
 
     public function checkSignature($params)
     {
-        $attrib = self::SIGNATURE_PARAM;
-        if (is_array($params) && array_key_exists($attrib, $params)) {
-            $signature = $params[$attrib];
-            unset($params[$attrib]);
-            return ($this->createHash($params) === $signature);
+        if ($this->needSignature) {
+            $attrib = self::SIGNATURE_PARAM;
+            $p = function ($value, $params) {
+                return ($this->createHash($params) === $value);
+            };
+        } else {
+            $attrib = self::API_KEY_PARAM;
+            $p = function ($value) {
+                return ($this->key === $value);
+            };
         }
-        return false;
+        return $this->checkSignatureImpl($params, $attrib, $p);
     }
 
     private function createHash($params)
@@ -45,5 +57,15 @@ class SignatureManager
             },
             ''
         );
+    }
+
+    private function checkSignatureImpl($params, $attrib, \Closure $p)
+    {
+        if (is_array($params) && array_key_exists($attrib, $params)) {
+            $value = $params[$attrib];
+            unset($params[$attrib]);
+            return $p($value, $params);
+        }
+        return false;
     }
 }

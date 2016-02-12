@@ -12,7 +12,6 @@ use Carvx\Utils\SignatureManager;
 class CarvxService
 {
     const USER_UID_PARAM = 'user_uid';
-    const API_KEY_PARAM = 'api_key';
 
     private $url;
     private $uid;
@@ -111,13 +110,8 @@ class CarvxService
     private function prepareParams($params)
     {
         $params[self::USER_UID_PARAM] = $this->uid;
-        if ($this->needSignature) {
-            $signManager = new SignatureManager($this->key);
-            return $signManager->addSignature($params);
-        } else {
-            $params[self::API_KEY_PARAM] = $this->key;
-            return $params;
-        }
+        $signManager = new SignatureManager($this->key, $this->needSignature);
+        return $signManager->addSignature($params);
     }
 
     private function parseResponse($response)
