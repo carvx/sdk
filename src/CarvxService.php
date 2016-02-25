@@ -11,7 +11,7 @@ use Carvx\Utils\SignatureManager;
 
 class CarvxService
 {
-    const USER_UID_PARAM = 'user_uid';
+    const USER_UID_HEADER = 'Carvx-User-Uid';
 
     private $url;
     private $uid;
@@ -39,12 +39,11 @@ class CarvxService
     public function createSearch($chassisNumber)
     {
         return $this->handleRequest(function () use ($chassisNumber) {
-            $request = new HttpRequest([
-                'url' => $this->createUrl('/api/v1/create-search'),
-            ]);
-            $curl = new Curl($request);
-            $params = $this->prepareParams(['chassis_number' => $chassisNumber]);
-            $response = $curl->post($params);
+            $curl = new Curl($this->createRequest(
+                '/api/v1/create-search',
+                ['chassis_number' => $chassisNumber]
+            ));
+            $response = $curl->post();
             $searchData = $this->parseResponse($response);
             return new Search($searchData['uid'], $searchData['cars']);
         });
@@ -53,15 +52,11 @@ class CarvxService
     public function createReport($searchId, $carId)
     {
         return $this->handleRequest(function () use ($searchId, $carId) {
-            $request = new HttpRequest([
-                'url' => $this->createUrl('/api/v1/create-report'),
-            ]);
-            $curl = new Curl($request);
-            $params = $this->prepareParams([
-                'search_id' => $searchId,
-                'car_id' => $carId
-            ]);
-            $response = $curl->post($params);
+            $curl = new Curl($this->createRequest(
+                '/api/v1/create-report',
+                ['search_id' => $searchId, 'car_id' => $carId]
+            ));
+            $response = $curl->post();
             return $this->parseResponse($response);
         });
     }
@@ -69,12 +64,11 @@ class CarvxService
     public function getReport($reportId)
     {
         return $this->handleRequest(function () use ($reportId) {
-            $request = new HttpRequest([
-                'url' => $this->createUrl('/api/v1/get-report'),
-            ]);
-            $curl = new Curl($request);
-            $params = $this->prepareParams(['report_id' => $reportId]);
-            $response = $curl->get($params);
+            $curl = new Curl($this->createRequest(
+                '/api/v1/get-report',
+                ['report_id' => $reportId]
+            ));
+            $response = $curl->get();
             return new Report($this->parseResponse($response));
         });
     }
@@ -84,8 +78,6 @@ class CarvxService
         try {
             return $handler();
         } catch (CarvxApiException $ex) {
-            // TODO: add logging
-            //echo($ex->getMessage() . "\n");
             if ($this->raiseExceptions) {
                 throw $ex;
             }
@@ -102,16 +94,18 @@ class CarvxService
         }
     }
 
-    private function createUrl($path)
+    private function createRequest($path, $params)
     {
-        return sprintf('%s%s', $this->url, $path);
-    }
-
-    private function prepareParams($params)
-    {
-        $params[self::USER_UID_PARAM] = $this->uid;
         $signManager = new SignatureManager($this->key, $this->needSignature);
-        return $signManager->addSignature($params);
+        $headers = $signManager->addSignature(
+            [self::USER_UID_HEADER => $this->uid],
+            $params
+        );
+        return new HttpRequest([
+            'url' => $this->url . $path,
+            'headers' => $headers,
+            'params' => $params,
+        ]);
     }
 
     private function parseResponse($response)

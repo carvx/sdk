@@ -4,8 +4,8 @@ namespace Carvx\Utils;
 
 class SignatureManager
 {
-    const SIGNATURE_PARAM = 'signature';
-    const API_KEY_PARAM = 'api_key';
+    const SIGNATURE_HEADER = 'Carvx-Signature';
+    const API_KEY_HEADER = 'Carvx-Api-Key';
 
     private $key;
     private $needSignature;
@@ -16,25 +16,25 @@ class SignatureManager
         $this->needSignature = $needSignature;
     }
 
-    public function addSignature($params)
+    public function addSignature($headers, $params)
     {
         if ($this->needSignature) {
-            $params[self::SIGNATURE_PARAM] = $this->createHash($params);
+            $headers[self::SIGNATURE_HEADER] = $this->createHash($params);
         } else {
-            $params[self::API_KEY_PARAM] = $this->key;
+            $headers[self::API_KEY_HEADER] = $this->key;
         }
-        return $params;
+        return $headers;
     }
 
     public function checkSignature($params)
     {
         if ($this->needSignature) {
-            $attrib = self::SIGNATURE_PARAM;
+            $attrib = self::SIGNATURE_HEADER;
             $p = function ($value, $params) {
                 return ($this->createHash($params) === $value);
             };
         } else {
-            $attrib = self::API_KEY_PARAM;
+            $attrib = self::API_KEY_HEADER;
             $p = function ($value) {
                 return ($this->key === $value);
             };
@@ -61,11 +61,17 @@ class SignatureManager
 
     private function checkSignatureImpl($params, $attrib, \Closure $p)
     {
-        if (is_array($params) && array_key_exists($attrib, $params)) {
-            $value = $params[$attrib];
-            unset($params[$attrib]);
+        if ($value = $this->getHeaderValue($attrib)) {
             return $p($value, $params);
         }
         return false;
+    }
+
+    private function getHeaderValue($name)
+    {
+        $headerName = strtoupper('http_' . str_replace('-', '_', $name));
+        return isset($headerName, $_SERVER)
+            ? $_SERVER[$headerName]
+            : null;
     }
 }
