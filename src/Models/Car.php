@@ -14,6 +14,7 @@ class Car extends AbstractModel
     const ENGINE_FIELD = 'engine';
     const DRIVE_FIELD = 'drive';
     const TRANSMISSION_FIELD = 'transmission';
+    const IMAGE_FIELD = 'image';
 
     public $carId;
     public $chassisNumber = '';
@@ -25,6 +26,7 @@ class Car extends AbstractModel
     public $engine = '';
     public $drive = '';
     public $transmission = '';
+    public $image = '';
 
     public function __construct($carId, $carData)
     {
@@ -38,6 +40,7 @@ class Car extends AbstractModel
         $this->engine = $carData[self::ENGINE_FIELD];
         $this->drive = $carData[self::DRIVE_FIELD];
         $this->transmission = $carData[self::TRANSMISSION_FIELD];
+        $this->image = $carData[self::IMAGE_FIELD];
     }
 
     protected function mappings()
@@ -53,6 +56,7 @@ class Car extends AbstractModel
             self::ENGINE_FIELD => 'engine',
             self::DRIVE_FIELD => 'drive',
             self::TRANSMISSION_FIELD => 'transmission',
+            self::IMAGE_FIELD => 'image',
         ];
     }
 }
