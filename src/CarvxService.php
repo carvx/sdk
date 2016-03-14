@@ -19,6 +19,7 @@ class CarvxService
 
     private $needSignature = true;
     private $raiseExceptions = false;
+    private $isTest = false;
 
     public function __construct($url, $uid, $key, $options = [])
     {
@@ -30,6 +31,7 @@ class CarvxService
             [
                 'needSignature' => 'is_bool',
                 'raiseExceptions' => 'is_bool',
+                'isTest' => 'is_bool',
             ],
             $options
         );
@@ -53,7 +55,11 @@ class CarvxService
         return $this->handleRequest(function () use ($searchId, $carId) {
             $curl = new Curl($this->createRequest(
                 '/api/v1/create-report',
-                ['search_id' => $searchId, 'car_id' => $carId]
+                [
+                    'search_id' => $searchId,
+                    'car_id' => $carId,
+                    'is_test' => $this->isTest ? '1' : '0',
+                ]
             ));
             $response = $curl->post();
             return $this->parseResponse($response);
