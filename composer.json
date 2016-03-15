@@ -4,8 +4,8 @@
     "description": "SDK for CAR VX web API",
     "authors": [
         {
-            "name": "CAR VX Limited",
-            "homepage": "http://carvx.jp"
+            "name": "Car VX Limited",
+            "homepage": "https://carvx.jp"
         }
     ],
     "require": {
