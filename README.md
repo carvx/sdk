@@ -57,15 +57,15 @@ Test reports will be in completed status right after creation. So you can execut
 With the help of created service object you can make the following requests to CAR VX system:
 
 1. Create search:
- ```php
+ ```
  $search = $service->createSearch($chassisNumber);
  ```
 2. Create report:
- ```php
+ ```
  $reportId = $service->createReport($searchId, $carId);
  ```
 3. Get report:
- ```php
+ ```
  $report = $service->getReport($reportId);
  ```
 
