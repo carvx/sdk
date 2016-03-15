@@ -26,12 +26,12 @@ require 'path-to-sdk/src/autoload.php';
 
 ## Usage
 
-### Get credentials
+### Getting credentials
 
 First of all, you should register in https://carvx.jp. Then please write an email to contact@carvx.jp with your company's name and your site's URL.
 After we enable API support for your account, you will see **API Settings** section in **My Account** area of the site. There you will find credentials necessary for SDK usage.
 
-### Make requests
+### Making requests
 
 You should create object of CarvxService class:
 ```php
@@ -49,23 +49,24 @@ $options - optional array with parameters - see below.
 
 *raiseExceptions* - boolean - if true, all exceptions occurred during request will be re-raised so you will be able to handle it manually. All exceptions are of the type of Carvx\Utils\CarvxApiException. If false, all exceptions will be handled internally. Default value - false.
 
-*isTest* - boolean - if true, all created reports will have test type. It is useful during development and testing stage. All test reports can be found in **My Reports** section of **My Account** area of the site (with checkbox checked). Default value - false.
+*isTest* - boolean - if true, all created reports will have test type. It is useful during development and testing stage. All test reports can be found in **My Reports** section of **My Account** area of the site (with 'Test' type selected). Default value - false.
+Test reports will be in completed status right after creation. So you can execute *getReport* call immediately after receiving report identifier with *createReport* call.
 
 #### Request types
 
 With the help of created service object you can make the following requests to CAR VX system:
 
 1. Create search:
-```php
-$search = $service->createSearch($chassisNumber);
-```
+ ```php
+ $search = $service->createSearch($chassisNumber);
+ ```
 2. Create report:
-```php
-$reportId = $service->createReport($searchId, $carId);
-```
+ ```php
+ $reportId = $service->createReport($searchId, $carId);
+ ```
 3. Get report:
-```php
-$report = $service->getReport($reportId);
-```
+ ```php
+ $report = $service->getReport($reportId);
+ ```
 
 After you've created a report it can take for a while for it to be ready. So you can either poll the server periodically or you can set the URL in **API Settings** and you will be notified when it is ready.
