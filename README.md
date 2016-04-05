@@ -72,6 +72,10 @@ With the help of created service object you can make the following requests to C
  ```
  $report = $service->getReport($reportId);
  ```
+4. Get report due date:  
+ ```
+ $report = $service->getReportDueDate($creationTime);
+ ```
 
 After you've created a report it can take for a while for it to be ready.
 So you can either poll the server periodically or you can set the URL in the **API Settings** section of the site and you will be notified when the report is ready.

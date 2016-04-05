@@ -21,6 +21,18 @@ class CarvxService
     private $raiseExceptions = false;
     private $isTest = false;
 
+    /**
+     * CarvxService constructor.
+     * @param string $url URL of the CAR VX site.
+     * @param string $uid User ID (can be found in the API Settings section of
+     * the site).
+     * @param string $key API key (can be found in the API Settings section of
+     * the site).
+     * @param array $options Available options are:
+     * - needSignature bool sign requests or pass plain API key (default true)
+     * - raiseException bool handle exception internally or not (default false)
+     * - isTest bool create test reports or not (default false).
+     */
     public function __construct($url, $uid, $key, $options = [])
     {
         $this->url = $url;
@@ -37,6 +49,11 @@ class CarvxService
         );
     }
 
+    /**
+     * Search the car by its chassis number.
+     * @param string $chassisNumber Chassis number of the car to be searched.
+     * @return Search|null Created search object on success, null on failure.
+     */
     public function createSearch($chassisNumber)
     {
         return $this->handleRequest(function () use ($chassisNumber) {
@@ -50,6 +67,13 @@ class CarvxService
         });
     }
 
+    /**
+     * Order the CAR VX report.
+     * @param string $searchId ID of the search returned by createSearch method.
+     * @param int $carId ID of the car in cars array of the search object.
+     * @return string|null ID of the created report on success, null on failure.
+     * @see createSearch()
+     */
     public function createReport($searchId, $carId)
     {
         return $this->handleRequest(function () use ($searchId, $carId) {
@@ -66,6 +90,12 @@ class CarvxService
         });
     }
 
+    /**
+     * Get report information.
+     * @param string $reportId ID of the report returned by createReport method.
+     * @return Report|null Report object on success, null on failure.
+     * @see createReport()
+     */
     public function getReport($reportId)
     {
         return $this->handleRequest(function () use ($reportId) {
@@ -75,6 +105,25 @@ class CarvxService
             ));
             $response = $curl->get();
             return new Report($this->parseResponse($response));
+        });
+    }
+
+    /**
+     * Get due date of the report.
+     * @param int $creationTime Optional timestamp of the report creation time.
+     * If it is omitted current time will be used.
+     * @return int|null Timestamp of the report's due date on success, null on error.
+     */
+    public function getReportDueDate($creationTime = null)
+    {
+        return $this->handleRequest(function () use ($creationTime) {
+            $creationTime = $creationTime ?: time();
+            $curl = new Curl($this->createRequest(
+                '/api/v1/get-report-due-date',
+                ['creation_time' => $creationTime]
+            ));
+            $response = $curl->get();
+            return intval($this->parseResponse($response));
         });
     }
 
