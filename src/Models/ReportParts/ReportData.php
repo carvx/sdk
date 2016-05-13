@@ -18,6 +18,7 @@ class ReportData extends AbstractModel
     const VEHICLE_ASSESSMENT_FIELD = 'vehicle_assessment';
     const VEHICLE_SPECIFICATION_FIELD = 'vehicle_specification';
     const SUMMARY_FIELD = 'summary';
+    const AUCTION_IMAGES_FIELD = 'auction_images';
 
     public $vehicleDetails;
     public $accidentHistory;
@@ -28,6 +29,7 @@ class ReportData extends AbstractModel
     public $vehicleAssessment;
     public $vehicleSpecification;
     public $summary;
+    public $auctionImages = [];
 
     public function __construct($reportData)
     {
@@ -46,6 +48,7 @@ class ReportData extends AbstractModel
         $this->vehicleAssessment = new VehicleAssessment($reportData[self::VEHICLE_ASSESSMENT_FIELD]);
         $this->vehicleSpecification = new VehicleSpecification($reportData[self::VEHICLE_SPECIFICATION_FIELD]);
         $this->summary = new Summary($reportData[self::SUMMARY_FIELD]);
+        $this->auctionImages = $reportData[self::AUCTION_IMAGES_FIELD];
     }
 
     protected function mappings()
@@ -60,6 +63,7 @@ class ReportData extends AbstractModel
             self::VEHICLE_ASSESSMENT_FIELD => 'vehicleAssessment',
             self::VEHICLE_SPECIFICATION_FIELD => 'vehicleSpecification',
             self::SUMMARY_FIELD => 'summary',
+            self::AUCTION_IMAGES_FIELD => 'auctionImages',
         ];
     }
 }
