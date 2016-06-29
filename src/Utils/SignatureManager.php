@@ -70,7 +70,7 @@ class SignatureManager
     private function getHeaderValue($name)
     {
         $headerName = strtoupper('http_' . str_replace('-', '_', $name));
-        return in_array($headerName, $_SERVER)
+        return isset($_SERVER[$headerName])
             ? $_SERVER[$headerName]
             : null;
     }
