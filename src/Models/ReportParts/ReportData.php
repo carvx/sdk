@@ -3,6 +3,7 @@
 namespace Carvx\Models\ReportParts;
 
 use Carvx\Models\AbstractModel;
+use Carvx\Models\ReportParts\Items\AuctionHistoryItem;
 use Carvx\Models\ReportParts\Items\DetailedHistoryItem;
 use Carvx\Models\ReportParts\Items\OdometerHistoryItem;
 use Carvx\Models\ReportParts\Items\RecallHistoryItem;
@@ -19,6 +20,7 @@ class ReportData extends AbstractModel
     const VEHICLE_SPECIFICATION_FIELD = 'vehicle_specification';
     const SUMMARY_FIELD = 'summary';
     const AUCTION_IMAGES_FIELD = 'auction_images';
+    const AUCTION_HISTORY_FIELD = 'auction_history';
 
     public $vehicleDetails;
     public $accidentHistory;
@@ -30,6 +32,7 @@ class ReportData extends AbstractModel
     public $vehicleSpecification;
     public $summary;
     public $auctionImages = [];
+    public $auctionHistory = [];
 
     public function __construct($reportData)
     {
@@ -49,6 +52,9 @@ class ReportData extends AbstractModel
         $this->vehicleSpecification = new VehicleSpecification($reportData[self::VEHICLE_SPECIFICATION_FIELD]);
         $this->summary = new Summary($reportData[self::SUMMARY_FIELD]);
         $this->auctionImages = $reportData[self::AUCTION_IMAGES_FIELD];
+        foreach ($reportData[self::AUCTION_HISTORY_FIELD] as $auctionHistoryItem) {
+            $this->auctionHistory[] = new AuctionHistoryItem($auctionHistoryItem);
+        }
     }
 
     protected function mappings()
@@ -64,6 +70,7 @@ class ReportData extends AbstractModel
             self::VEHICLE_SPECIFICATION_FIELD => 'vehicleSpecification',
             self::SUMMARY_FIELD => 'summary',
             self::AUCTION_IMAGES_FIELD => 'auctionImages',
+            self::AUCTION_HISTORY_FIELD => 'auctionHistory',
         ];
     }
 }
