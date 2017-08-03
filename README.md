@@ -64,7 +64,7 @@ With the help of created service object you can make the following requests to C
  ```
  $search = $service->createSearch($chassisNumber);
  ```
-2. Create report:  
+2. Create report by search result:  
  ```
  $reportId = $service->createReport($searchId, $carId);
  ```
@@ -75,6 +75,10 @@ With the help of created service object you can make the following requests to C
 4. Get report due date:  
  ```
  $report = $service->getReportDueDate($creationTime);
+ ```
+5. Create report by chassis number:  
+ ```
+ $report = $service->createReportByChassisNumber($chassisNumber);
  ```
 
 After you've created a report it can take for a while for it to be ready.

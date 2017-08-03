@@ -68,7 +68,7 @@ class CarvxService
     }
 
     /**
-     * Order the CAR VX report.
+     * Order the CAR VX report by search result.
      * @param string $searchId ID of the search returned by createSearch method.
      * @param int $carId ID of the car in cars array of the search object.
      * @return string|null ID of the created report on success, null on failure.
@@ -82,7 +82,27 @@ class CarvxService
                 [
                     'search_id' => $searchId,
                     'car_id' => $carId,
-                    'is_test' => $this->isTest ? '1' : '0',
+                    'is_test' => $this->getTestValue(),
+                ]
+            ));
+            $response = $curl->post();
+            return $this->parseResponse($response);
+        });
+    }
+
+    /**
+     * Order the CAR VX report by chassis number or VIN-code.
+     * @param string $chassisNumber chassis number or VIN-code.
+     * @return string|null ID of the created report on success, null on failure.
+     */
+    public function createReportByChassisNumber($chassisNumber)
+    {
+        return $this->handleRequest(function () use ($chassisNumber) {
+            $curl = new Curl($this->createRequest(
+                '/api/v1/create-report-by-chassis-number',
+                [
+                    'chassis_number' => $chassisNumber,
+                    'is_test' => $this->getTestValue(),
                 ]
             ));
             $response = $curl->post();
@@ -169,5 +189,10 @@ class CarvxService
             throw new CarvxApiException($parsedBody['error']);
         }
         return $parsedBody['data'];
+    }
+
+    private function getTestValue()
+    {
+        return $this->isTest ? '1' : '0';
     }
 }
