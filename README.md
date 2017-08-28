@@ -74,7 +74,7 @@ With the help of created service object you can make the following requests to C
  ```
 4. Get report due date:  
  ```
- $report = $service->getReportDueDate($creationTime);
+ $dueDate = $service->getReportDueDate($creationTime);
  ```
 5. Create report by chassis number:  
  ```
