@@ -63,7 +63,7 @@ class CarvxService
             ));
             $response = $curl->post();
             $searchData = $this->parseResponse($response);
-            return new Search($searchData['uid'], $searchData['cars']);
+            return new Search($searchData['uid'], $searchData['cars'], $searchData['additional_data_available']);
         });
     }
 
