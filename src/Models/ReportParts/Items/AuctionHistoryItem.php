@@ -21,10 +21,17 @@ class AuctionHistoryItem extends AbstractModel
     const RESULT_FIELD = 'result';
     const ASSESSMENT_FIELD = 'assessment';
     const IMAGES_FIELD = 'images';
+    const REGION_FIELD = 'region';
+    const PROBLEM_TYPE_FIELD = 'problem_type';
+    const PROBLEM_SCALE_FIELD = 'problem_scale';
+    const AIRBAG_FIELD = 'airbag';
+    const IS_CONTAMINATED_FIELD = 'is_contaminated';
+    const AUCTION_LOT_URL_FIELD = 'auction_lot_url';
 
     public $date;
     public $lotNumber;
     public $auction;
+    public $auctionLotUrl;
     public $make;
     public $model;
     public $registrationDate;
@@ -36,6 +43,11 @@ class AuctionHistoryItem extends AbstractModel
     public $finalPrice;
     public $result;
     public $assessment;
+    public $region;
+    public $problemType;
+    public $problemScale;
+    public $airbag;
+    public $isContaminated;
     public $images = [];
 
     public function __construct($auctionHistoryData)
@@ -49,6 +61,7 @@ class AuctionHistoryItem extends AbstractModel
             self::DATE_FIELD => 'date',
             self::LOT_NUMBER_FIELD => 'lotNumber',
             self::AUCTION_FIELD => 'auction',
+            self::AUCTION_LOT_URL_FIELD => 'auctionLotUrl',
             self::BRAND_FIELD => 'make',
             self::MODEL_FIELD => 'model',
             self::REGISTRATION_DATE_FIELD => 'registrationDate',
@@ -60,6 +73,11 @@ class AuctionHistoryItem extends AbstractModel
             self::PRICE_FIELD => 'finalPrice',
             self::RESULT_FIELD => 'result',
             self::ASSESSMENT_FIELD => 'assessment',
+            self::REGION_FIELD => 'region',
+            self::PROBLEM_TYPE_FIELD => 'problemType',
+            self::PROBLEM_SCALE_FIELD => 'problemScale',
+            self::AIRBAG_FIELD => 'airbag',
+            self::IS_CONTAMINATED_FIELD => 'isContaminated',
             self::IMAGES_FIELD => 'images',
         ];
     }
